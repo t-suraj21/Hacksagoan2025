@@ -266,6 +266,8 @@ const Notebook = () => {
 
               <button
                 onClick={handleAddNote}
+                data-testid="add-note"
+                aria-label="Add Note"
                 className="group bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-purple-500/25 hover:scale-105 transform"
               >
                 <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
@@ -351,6 +353,8 @@ const Notebook = () => {
                   </button>
                   <button
                     onClick={editingNoteId ? handleUpdateNote : handleSaveNote}
+                    data-testid="save-note"
+                    aria-label="Save Note"
                     className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl transition-all duration-300 flex items-center gap-2 font-medium shadow-lg hover:shadow-purple-500/25 hover:scale-105 transform"
                   >
                     <Save className="w-5 h-5" />
@@ -383,6 +387,8 @@ const Notebook = () => {
                       </button>
                       <button
                         onClick={() => handleDeleteNote(note._id)}
+                        data-testid="delete-note"
+                        aria-label="Delete Note"
                         className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-300"
                       >
                         <Trash2 className="w-4 h-4" />

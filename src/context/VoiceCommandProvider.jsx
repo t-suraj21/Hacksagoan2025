@@ -9,12 +9,15 @@ const commandPatterns = [
   { pattern: /(?:go to|open|navigate to|show|take me to) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy)/i, action: 'navigation' },
   { pattern: /(?:open|go to|navigate to|show) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy)/i, action: 'navigation' },
   
-  // Note management
+  // Note management - Enhanced patterns
   { pattern: /(?:create|make|start|new) (?:a )?(note|notebook entry)/i, action: 'create-note' },
+  { pattern: /(?:open|go to) (?:the )?notebook/i, action: 'open-notebook' },
   { pattern: /(?:save|store) (?:the )?(note|notebook entry)/i, action: 'save-note' },
   { pattern: /(?:delete|remove|erase) (?:the )?(note|notebook entry)/i, action: 'delete-note' },
   
-  // Book commands
+  // Library commands - Enhanced with class and subject filtering
+  { pattern: /(?:show|find|get) (?:books for|books in) class (\d+)(?: (?:subject|for) ([^ ]+))?/i, action: 'filter-library-class' },
+  { pattern: /(?:show|find|get) (?:books for|books in) ([^ ]+)(?: class (\d+))?/i, action: 'filter-library-subject' },
   { pattern: /(?:open|read|show|find) (?:the )?book ([^ ]+)(?: (?:in|for) class (\d+))?(?: (?:subject|for) ([^ ]+))?/i, action: 'open-book-advanced' },
   { pattern: /(?:open|read|show|find) (?:the )?book (.+)/i, action: 'open-book' },
   { pattern: /(?:search for|find) (?:a )?book (.+)/i, action: 'search-book' },
@@ -432,21 +435,104 @@ export const VoiceCommandProvider = ({ children }) => {
         case 'create-note':
           navigate('/notebook');
           setTimeout(() => {
-            const addBtn = document.querySelector('button[aria-label="Add Note"], button:contains("Add"), button:contains("New")');
+            // Look for the add note button with multiple selectors
+            const addBtn = document.querySelector('[data-testid="add-note"], button[aria-label*="Add"], button[aria-label*="New"], button:contains("Add"), button:contains("New"), .add-note-btn, #add-note-btn');
             if (addBtn) {
               addBtn.click();
               setFeedback('📝 Creating new note. Say "title [your title]", "content [your content]", then "save note"');
               speak('Creating a new note. You can now dictate the title and content');
               setNoteState({ mode: 'dictate', title: '', content: '' });
             } else {
-              setFeedback('❌ Could not find add note button');
-              speak('Could not find add note button');
+              // Try to find any button that might be the add button
+              const allButtons = document.querySelectorAll('button');
+              const addButton = Array.from(allButtons).find(btn => 
+                btn.textContent.toLowerCase().includes('add') || 
+                btn.textContent.toLowerCase().includes('new') ||
+                btn.textContent.toLowerCase().includes('+')
+              );
+              if (addButton) {
+                addButton.click();
+                setFeedback('📝 Creating new note. Say "title [your title]", "content [your content]", then "save note"');
+                speak('Creating a new note. You can now dictate the title and content');
+                setNoteState({ mode: 'dictate', title: '', content: '' });
+              } else {
+                setFeedback('❌ Could not find add note button. Please click the + button manually');
+                speak('Could not find add note button. Please click the plus button manually');
+              }
             }
           }, 1000);
           break;
 
+        case 'open-notebook':
+          navigate('/notebook');
+          setFeedback('📓 Opening notebook');
+          speak('Opening notebook');
+          break;
+
+        case 'filter-library-class': {
+          const classNum = match[1];
+          const subject = match[2];
+          
+          navigate('/library');
+          setTimeout(() => {
+            // Set class filter
+            const classSelect = document.querySelector('select[name="class"], select[data-testid="class-select"], #class-select');
+            if (classSelect) {
+              classSelect.value = `Class ${classNum}`;
+              classSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            
+            // Set subject filter if provided
+            if (subject) {
+              setTimeout(() => {
+                const subjectSelect = document.querySelector('select[name="subject"], select[data-testid="subject-select"], #subject-select');
+                if (subjectSelect) {
+                  subjectSelect.value = subject;
+                  subjectSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+              }, 500);
+            }
+            
+            const response = `📚 Showing books for class ${classNum}${subject ? ` ${subject}` : ''}`;
+            setFeedback(response);
+            speak(`Showing books for class ${classNum}${subject ? ` ${subject}` : ''}`);
+          }, 1000);
+          break;
+        }
+
+        case 'filter-library-subject': {
+          const subject = match[1];
+          const classNum = match[2];
+          
+          navigate('/library');
+          setTimeout(() => {
+            // Set subject filter
+            const subjectSelect = document.querySelector('select[name="subject"], select[data-testid="subject-select"], #subject-select');
+            if (subjectSelect) {
+              subjectSelect.value = subject;
+              subjectSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            
+            // Set class filter if provided
+            if (classNum) {
+              setTimeout(() => {
+                const classSelect = document.querySelector('select[name="class"], select[data-testid="class-select"], #class-select');
+                if (classSelect) {
+                  classSelect.value = `Class ${classNum}`;
+                  classSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+              }, 500);
+            }
+            
+            const response = `📚 Showing ${subject} books${classNum ? ` for class ${classNum}` : ''}`;
+            setFeedback(response);
+            speak(`Showing ${subject} books${classNum ? ` for class ${classNum}` : ''}`);
+          }, 1000);
+          break;
+        }
+
         case 'save-note':
-          const saveBtn = document.querySelector('button[aria-label="Save Note"], button[type="submit"], button:contains("Save")');
+          const saveBtn = document.querySelector('button[aria-label*="Save"], button[type="submit"], button:contains("Save"), .save-btn, #save-btn');
           if (saveBtn) {
             saveBtn.click();
             setFeedback('✅ Note saved');
@@ -458,7 +544,7 @@ export const VoiceCommandProvider = ({ children }) => {
           break;
 
         case 'delete-note':
-          const deleteBtn = document.querySelector('button[aria-label="Delete Note"], button:contains("Delete"), button:contains("Remove")');
+          const deleteBtn = document.querySelector('button[aria-label*="Delete"], button:contains("Delete"), button:contains("Remove"), .delete-btn, #delete-btn');
           if (deleteBtn) {
             deleteBtn.click();
             setFeedback('🗑️ Note deleted');

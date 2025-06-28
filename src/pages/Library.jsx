@@ -348,6 +348,9 @@ const Library = () => {
               <select
                 value={selectedClass}
                 onChange={handleClassChange}
+                name="class"
+                id="class-select"
+                data-testid="class-select"
                 className="w-full sm:flex-1 px-3 sm:px-4 py-2 sm:py-3 rounded-xl sm:rounded-2xl bg-[#1a1333] text-white border border-purple-600 focus:ring-2 focus:ring-purple-400 shadow-lg backdrop-blur-md hover:bg-[#2a0845] transition-all appearance-none text-sm sm:text-base mt-2 sm:mt-0"
               >
                 <option value="">Class</option>
@@ -358,6 +361,9 @@ const Library = () => {
               <select
                 value={selectedSubject}
                 onChange={handleSubjectChange}
+                name="subject"
+                id="subject-select"
+                data-testid="subject-select"
                 className="w-full sm:flex-1 px-3 sm:px-4 py-2 sm:py-3 rounded-xl sm:rounded-2xl bg-[#1a1333] text-white border border-purple-600 focus:ring-2 focus:ring-purple-400 shadow-lg backdrop-blur-md hover:bg-[#2a0845] transition-all appearance-none text-sm sm:text-base"
               >
                 <option value="">Subject</option>
@@ -504,9 +510,10 @@ const Library = () => {
               return (
               <div
                 key={book.id}
-                  className="group bg-white/10 p-8 rounded-3xl shadow-[0_8px_32px_0_rgba(58,0,128,0.25)] border border-white/10 hover:border-purple-400 transition-all duration-300 cursor-pointer flex flex-col items-center justify-between h-[370px] w-full hover:scale-[1.03] backdrop-blur-md"
-                  onClick={() => handleBookClick(book)}
-                  tabIndex={0}
+                data-book-title={book.volumeInfo.title}
+                className="group bg-white/10 p-8 rounded-3xl shadow-[0_8px_32px_0_rgba(58,0,128,0.25)] border border-white/10 hover:border-purple-400 transition-all duration-300 cursor-pointer flex flex-col items-center justify-between h-[370px] w-full hover:scale-[1.03] backdrop-blur-md"
+                onClick={() => handleBookClick(book)}
+                tabIndex={0}
               >
                 {/* Title and Author at the top */}
                 <div className="w-full mb-2">
