@@ -320,13 +320,6 @@ const Home = () => {
           <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
             Experience education through intuitive navigation designed specifically for blind and visually impaired learners.
           </p>
-
-          {/* Enhanced Glowing CTA Button */}
-          <button className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25 focus:outline-none focus:ring-4 focus:ring-purple-400/50">
-            <span className="relative z-10">Get Started</span>
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-          </button>
         </div>
 
         {/* Quick Actions with Enhanced Glassmorphism */}
