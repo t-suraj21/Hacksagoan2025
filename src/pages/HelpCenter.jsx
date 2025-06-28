@@ -1,11 +1,11 @@
 import React from 'react';
-import { HelpCircle, Mail, Users, Book, ArrowLeft } from 'lucide-react';
+import { HelpCircle, Mail, Users, Book, ArrowLeft, ChevronRight, MessageCircle, Star, Zap, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const HelpCenter = () => {
   const navigate = useNavigate();
 
-  const navigateToHome = () => navigate('/home');
+  const navigateToHome = () => navigate('/');
 
   const faqs = [
     {
@@ -26,144 +26,263 @@ const HelpCenter = () => {
     }
   ];
 
+  const helpSections = [
+    {
+      title: 'Getting Started',
+      icon: Book,
+      color: 'from-blue-500 to-cyan-500',
+      items: [
+        'Create an account or log in to access all features.',
+        'Explore the Digital Library for books and study materials.',
+        'Take interactive tests to assess your knowledge.',
+        'Use the Notebook to make and organize your notes.',
+        'Visit your Dashboard to track your progress.'
+      ]
+    },
+    {
+      title: 'Accessibility Features',
+      icon: Zap,
+      color: 'from-purple-500 to-pink-500',
+      items: [
+        'Screen reader support for all major elements.',
+        'Keyboard shortcuts for fast navigation (see Documentation for full list).',
+        'Text-to-speech and adjustable audio settings.',
+        'High-contrast and dark mode options for better visibility.'
+      ]
+    },
+    {
+      title: 'Troubleshooting',
+      icon: HelpCircle,
+      color: 'from-green-500 to-emerald-500',
+      items: [
+        'Audio not working? Check your device settings and browser permissions.',
+        'Navigation issues? Ensure keyboard shortcuts are enabled in your settings.',
+        'Login problems? Try clearing your browser cache and cookies.',
+        'Still stuck? Contact support for personalized help.'
+      ]
+    },
+    {
+      title: 'Account & Security',
+      icon: Shield,
+      color: 'from-orange-500 to-red-500',
+      items: [
+        'Change your password in Profile & Settings.',
+        'Manage your privacy and notification preferences.',
+        'All your data is encrypted and securely stored.',
+        'Contact us if you notice any suspicious activity on your account.'
+      ]
+    },
+    {
+      title: 'Feedback & Suggestions',
+      icon: MessageCircle,
+      color: 'from-indigo-500 to-purple-500',
+      items: [
+        'We value your feedback! Help us improve by sharing your thoughts or feature requests.',
+        'Send feedback to support@garur.com with subject "Feedback"'
+      ]
+    },
+    {
+      title: 'Community & Resources',
+      icon: Users,
+      color: 'from-pink-500 to-rose-500',
+      items: [
+        'Documentation – Full user guide and tips.',
+        'Community Forum – Connect with other learners.',
+        'Digital Library – Access study materials.',
+        'Notebook – Organize your notes.'
+      ]
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-black text-white overflow-hidden relative">
+      <style jsx>{`
+        @keyframes blob-morph {
+          0%, 100% { 
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            transform: rotate(0deg) scale(1);
+          }
+          25% { 
+            border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+            transform: rotate(90deg) scale(1.1);
+          }
+          50% { 
+            border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%;
+            transform: rotate(180deg) scale(0.9);
+          }
+          75% { 
+            border-radius: 60% 40% 60% 30% / 70% 30% 60% 40%;
+            transform: rotate(270deg) scale(1.05);
+          }
+        }
+
+        @keyframes neon-glow {
+          0%, 100% { 
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.5),
+                        0 0 40px rgba(147, 51, 234, 0.3),
+                        0 0 60px rgba(147, 51, 234, 0.1);
+          }
+          50% { 
+            box-shadow: 0 0 30px rgba(147, 51, 234, 0.8),
+                        0 0 60px rgba(147, 51, 234, 0.5),
+                        0 0 90px rgba(147, 51, 234, 0.3);
+          }
+        }
+
+        .blob-morph {
+          animation: blob-morph 8s ease-in-out infinite;
+        }
+
+        .card-3d {
+          transform-style: preserve-3d;
+          transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .card-3d:hover {
+          transform: rotateY(12deg) rotateX(8deg) translateZ(20px);
+        }
+
+        .neon-glow {
+          animation: neon-glow 2s ease-in-out infinite alternate;
+          transition: all 0.3s ease;
+        }
+
+        .magnetic-cursor {
+          transition: transform 0.2s ease;
+        }
+
+        .magnetic-cursor:hover {
+          transform: scale(1.05) translateZ(10px);
+        }
+      `}</style>
+
+      {/* Blob Morph Background Shapes */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blob-morph"></div>
+        <div className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-r from-purple-500/10 to-pink-500/10 blob-morph" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-pink-500/5 to-blue-500/5 blob-morph" style={{animationDelay: '4s'}}></div>
+      </div>
+
       {/* Header */}
-      <header className="border-b border-purple-800/30 bg-black/20 backdrop-blur-sm sticky top-0 z-50">
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 backdrop-blur-xl bg-black/20">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-                <HelpCircle className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-2xl shadow-purple-500/25 neon-glow">
+                <HelpCircle className="w-7 h-7 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-white">Help Center</h1>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent">Help Center</h1>
             </div>
             <button
               onClick={navigateToHome}
-              className="text-white hover:text-purple-400 transition-all flex items-center gap-2"
+              className="group magnetic-cursor px-6 py-3 text-gray-300 hover:text-white transition-all duration-500 relative overflow-hidden rounded-xl border border-white/10 hover:border-purple-500/50 backdrop-blur-sm hover:bg-white/5 neon-glow"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
+              <span className="relative z-10 flex items-center space-x-2">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Home
+              </span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 sm:px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <main className="container mx-auto px-6 py-32">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl font-bold text-white mb-4 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">How Can We Help?</h2>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">Find answers to common questions and get the support you need</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           {/* FAQ Section */}
-          <div className="bg-white/5 border border-purple-800/30 rounded-xl p-6 backdrop-blur-sm">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-purple-600/20 rounded-lg">
-                <Book className="w-6 h-6 text-purple-400" />
-              </div>
-              <h2 className="text-xl font-semibold text-white">Frequently Asked Questions</h2>
-            </div>
-            <div className="space-y-6">
-              {faqs.map((faq, idx) => (
-                <div key={idx} className="space-y-2">
-                  <h3 className="text-lg font-medium text-purple-300">{faq.question}</h3>
-                  <p className="text-gray-300 text-sm">{faq.answer}</p>
+          <div className="card-3d group p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-purple-500/50 transition-all duration-700 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20 cursor-pointer relative overflow-hidden magnetic-cursor">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 p-4 group-hover:shadow-2xl group-hover:scale-110 transition-all duration-500 shadow-lg neon-glow">
+                  <Book className="w-8 h-8 text-white" />
                 </div>
-              ))}
+                <h2 className="text-2xl font-semibold text-white group-hover:text-purple-200 transition-colors duration-300">Frequently Asked Questions</h2>
+              </div>
+              <div className="space-y-4">
+                {faqs.map((faq, idx) => (
+                  <div key={idx} className="p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 group-hover:border-purple-500/30 transition-all duration-300">
+                    <h3 className="text-lg font-medium text-purple-300 group-hover:text-purple-200 transition-colors duration-300 flex items-center mb-2">
+                      <ChevronRight className="w-4 h-4 mr-2 text-purple-400" />
+                      {faq.question}
+                    </h3>
+                    <p className="text-gray-300 text-sm group-hover:text-gray-200 transition-colors duration-300">{faq.answer}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Contact & Support Section */}
-          <div className="bg-white/5 border border-purple-800/30 rounded-xl p-6 backdrop-blur-sm flex flex-col gap-8 justify-between">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-purple-600/20 rounded-lg">
-                  <Users className="w-6 h-6 text-purple-400" />
+          <div className="card-3d group p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-purple-500/50 transition-all duration-700 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20 cursor-pointer relative overflow-hidden magnetic-cursor">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 p-4 group-hover:shadow-2xl group-hover:scale-110 transition-all duration-500 shadow-lg neon-glow">
+                  <Users className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-xl font-semibold text-white">Contact & Support</h2>
+                <h2 className="text-2xl font-semibold text-white group-hover:text-purple-200 transition-colors duration-300">Contact & Support</h2>
               </div>
-              <ul className="space-y-4">
-                <li className="flex items-center gap-3 text-gray-300">
+              <div className="space-y-4 mb-6">
+                <div className="flex items-center gap-3 text-gray-300 group-hover:text-gray-200 transition-colors duration-300 p-3 rounded-xl bg-white/5 backdrop-blur-sm">
                   <Mail className="w-5 h-5 text-purple-300" />
-                  <span>Email: <a href="mailto:support@garur.com" className="text-purple-300 hover:underline">support@garur.com</a></span>
-                </li>
-                <li className="flex items-center gap-3 text-gray-300">
-                  <span>Community Forum: <a href="#" className="text-purple-300 hover:underline">Join our community</a></span>
-                </li>
-                <li className="flex items-center gap-3 text-gray-300">
-                  <span>FAQ: <a href="#faq" className="text-purple-300 hover:underline">See all FAQs</a></span>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-2">Need more help?</h3>
-              <p className="text-gray-300 mb-2">If you have a specific question or need further assistance, please reach out to our support team. We are here to help you 24/7.</p>
-              <a href="mailto:support@garur.com" className="btn-primary">Contact Support</a>
+                  <span>Email: <a href="mailto:support@garur.com" className="text-purple-300 hover:text-purple-200 transition-colors duration-300">support@garur.com</a></span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-300 group-hover:text-gray-200 transition-colors duration-300 p-3 rounded-xl bg-white/5 backdrop-blur-sm">
+                  <MessageCircle className="w-5 h-5 text-purple-300" />
+                  <span>Community Forum: <a href="#" className="text-purple-300 hover:text-purple-200 transition-colors duration-300">Join our community</a></span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-300 group-hover:text-gray-200 transition-colors duration-300 p-3 rounded-xl bg-white/5 backdrop-blur-sm">
+                  <Star className="w-5 h-5 text-purple-300" />
+                  <span>FAQ: <a href="#faq" className="text-purple-300 hover:text-purple-200 transition-colors duration-300">See all FAQs</a></span>
+                </div>
+              </div>
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-purple-500/20">
+                <h3 className="text-lg font-semibold text-white mb-2">Need more help?</h3>
+                <p className="text-gray-300 mb-4 text-sm">If you have a specific question or need further assistance, please reach out to our support team. We are here to help you 24/7.</p>
+                <a href="mailto:support@garur.com" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-purple-500/25">
+                  Contact Support
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Additional Help Center Sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Getting Started */}
-          <div className="bg-white/5 border border-purple-800/30 rounded-xl p-6 backdrop-blur-sm">
-            <h2 className="text-xl font-semibold text-white mb-4">Getting Started</h2>
-            <ul className="list-disc pl-5 text-gray-300 space-y-2 text-sm">
-              <li>Create an account or log in to access all features.</li>
-              <li>Explore the Digital Library for books and study materials.</li>
-              <li>Take interactive tests to assess your knowledge.</li>
-              <li>Use the Notebook to make and organize your notes.</li>
-              <li>Visit your Dashboard to track your progress.</li>
-            </ul>
-          </div>
-
-          {/* Accessibility Features */}
-          <div className="bg-white/5 border border-purple-800/30 rounded-xl p-6 backdrop-blur-sm">
-            <h2 className="text-xl font-semibold text-white mb-4">Accessibility Features</h2>
-            <ul className="list-disc pl-5 text-gray-300 space-y-2 text-sm">
-              <li>Screen reader support for all major elements.</li>
-              <li>Keyboard shortcuts for fast navigation (see Documentation for full list).</li>
-              <li>Text-to-speech and adjustable audio settings.</li>
-              <li>High-contrast and dark mode options for better visibility.</li>
-            </ul>
-          </div>
-
-          {/* Troubleshooting */}
-          <div className="bg-white/5 border border-purple-800/30 rounded-xl p-6 backdrop-blur-sm">
-            <h2 className="text-xl font-semibold text-white mb-4">Troubleshooting</h2>
-            <ul className="list-disc pl-5 text-gray-300 space-y-2 text-sm">
-              <li>Audio not working? Check your device settings and browser permissions.</li>
-              <li>Navigation issues? Ensure keyboard shortcuts are enabled in your settings.</li>
-              <li>Login problems? Try clearing your browser cache and cookies.</li>
-              <li>Still stuck? Contact support for personalized help.</li>
-            </ul>
-          </div>
-
-          {/* Account & Security */}
-          <div className="bg-white/5 border border-purple-800/30 rounded-xl p-6 backdrop-blur-sm">
-            <h2 className="text-xl font-semibold text-white mb-4">Account & Security</h2>
-            <ul className="list-disc pl-5 text-gray-300 space-y-2 text-sm">
-              <li>Change your password in Profile & Settings.</li>
-              <li>Manage your privacy and notification preferences.</li>
-              <li>All your data is encrypted and securely stored.</li>
-              <li>Contact us if you notice any suspicious activity on your account.</li>
-            </ul>
-          </div>
-
-          {/* Feedback & Suggestions */}
-          <div className="bg-white/5 border border-purple-800/30 rounded-xl p-6 backdrop-blur-sm">
-            <h2 className="text-xl font-semibold text-white mb-4">Feedback & Suggestions</h2>
-            <p className="text-gray-300 text-sm mb-2">We value your feedback! Help us improve by sharing your thoughts or feature requests.</p>
-            <a href="mailto:support@garur.com?subject=Feedback" className="text-purple-300 hover:underline text-sm">Send Feedback</a>
-          </div>
-
-          {/* Community & Resources */}
-          <div className="bg-white/5 border border-purple-800/30 rounded-xl p-6 backdrop-blur-sm">
-            <h2 className="text-xl font-semibold text-white mb-4">Community & Resources</h2>
-            <ul className="list-disc pl-5 text-gray-300 space-y-2 text-sm">
-              <li><a href="/documentation" className="text-purple-300 hover:underline">Documentation</a> – Full user guide and tips.</li>
-              <li><a href="#" className="text-purple-300 hover:underline">Community Forum</a> – Connect with other learners.</li>
-              <li><a href="/library" className="text-purple-300 hover:underline">Digital Library</a> – Access study materials.</li>
-              <li><a href="/notebook" className="text-purple-300 hover:underline">Notebook</a> – Organize your notes.</li>
-            </ul>
-          </div>
+          {helpSections.map((section, index) => {
+            const IconComponent = section.icon;
+            return (
+              <div
+                key={index}
+                className="card-3d group p-6 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-purple-500/50 transition-all duration-700 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20 cursor-pointer relative overflow-hidden magnetic-cursor"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${section.color} p-3 group-hover:shadow-xl group-hover:scale-110 transition-all duration-500 shadow-lg`}>
+                      <IconComponent className="w-6 h-6 text-white" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-white group-hover:text-purple-200 transition-colors duration-300">{section.title}</h2>
+                  </div>
+                  <ul className="space-y-2 text-sm">
+                    {section.items.map((item, itemIndex) => (
+                      <li key={itemIndex} className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 flex items-start">
+                        <ChevronRight className="w-3 h-3 mr-2 mt-1 text-purple-400 flex-shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </main>
     </div>

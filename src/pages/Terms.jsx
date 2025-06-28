@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Terms = () => {
   const navigate = useNavigate();
 
-  const navigateToHome = () => navigate('/home');
+  const navigateToHome = () => navigate('/');
 
   const sections = [
     {
@@ -54,7 +54,74 @@ const Terms = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white overflow-hidden relative">
+      <style jsx>{`
+        @keyframes blob-morph {
+          0%, 100% { 
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            transform: rotate(0deg) scale(1);
+          }
+          25% { 
+            border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+            transform: rotate(90deg) scale(1.1);
+          }
+          50% { 
+            border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%;
+            transform: rotate(180deg) scale(0.9);
+          }
+          75% { 
+            border-radius: 60% 40% 60% 30% / 70% 30% 60% 40%;
+            transform: rotate(270deg) scale(1.05);
+          }
+        }
+
+        @keyframes neon-glow {
+          0%, 100% { 
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.5),
+                        0 0 40px rgba(147, 51, 234, 0.3),
+                        0 0 60px rgba(147, 51, 234, 0.1);
+          }
+          50% { 
+            box-shadow: 0 0 30px rgba(147, 51, 234, 0.8),
+                        0 0 60px rgba(147, 51, 234, 0.5),
+                        0 0 90px rgba(147, 51, 234, 0.3);
+          }
+        }
+
+        .blob-morph {
+          animation: blob-morph 8s ease-in-out infinite;
+        }
+
+        .card-3d {
+          transform-style: preserve-3d;
+          transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .card-3d:hover {
+          transform: rotateY(12deg) rotateX(8deg) translateZ(20px);
+        }
+
+        .neon-glow {
+          animation: neon-glow 2s ease-in-out infinite alternate;
+          transition: all 0.3s ease;
+        }
+
+        .magnetic-cursor {
+          transition: transform 0.2s ease;
+        }
+
+        .magnetic-cursor:hover {
+          transform: scale(1.05) translateZ(10px);
+        }
+      `}</style>
+
+      {/* Blob Morph Background Shapes */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blob-morph"></div>
+        <div className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-r from-purple-500/10 to-pink-500/10 blob-morph" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-pink-500/5 to-blue-500/5 blob-morph" style={{animationDelay: '4s'}}></div>
+      </div>
+
       {/* Header */}
       <header className="relative border-b border-white/10 backdrop-blur-xl bg-black/20">
         <div className="container mx-auto px-6 py-4">
