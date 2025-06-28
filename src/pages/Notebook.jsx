@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Book, Plus, Trash2, Edit2, Save, ArrowLeft, Calendar, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getAccessToken, refreshAccessToken } from '../utils/auth';
+import { useVoiceCommand } from '../context/VoiceCommandProvider';
 
 const NUM_PARTICLES = 50;
 
 const Notebook = () => {
   const navigate = useNavigate();
+  const { noteState, setNoteState } = useVoiceCommand();
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -25,6 +27,23 @@ const Notebook = () => {
   useEffect(() => {
     fetchNotes();
   }, []);
+
+  // Handle voice command note state changes
+  useEffect(() => {
+    if (noteState.mode === 'dictate') {
+      if (!isAddingNote && !editingNoteId) {
+        handleAddNote();
+      }
+      
+      if (noteState.title) {
+        setNewNote(prev => ({ ...prev, title: noteState.title }));
+      }
+      
+      if (noteState.content) {
+        setNewNote(prev => ({ ...prev, content: noteState.content }));
+      }
+    }
+  }, [noteState]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -202,6 +221,7 @@ const Notebook = () => {
 
       setIsAddingNote(false);
       setNewNote({ title: '', content: '' });
+      setNoteState({ mode: null, title: '', content: '' });
     } catch (err) {
       console.error('Error saving note:', err);
       setError(err.message);
@@ -294,6 +314,7 @@ const Notebook = () => {
 
       setEditingNoteId(null);
       setNewNote({ title: '', content: '' });
+      setNoteState({ mode: null, title: '', content: '' });
     } catch (err) {
       console.error('Error updating note:', err);
       setError(err.message);

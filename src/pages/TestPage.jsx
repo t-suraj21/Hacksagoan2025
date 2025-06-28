@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Mic, MicOff, ArrowLeft, Bell, Settings, User } from 'lucide-react';
+import { useVoiceCommand } from '../context/VoiceCommandProvider';
 
 const CLASSES = Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`);
 const SUBJECTS = [
@@ -15,9 +16,11 @@ const NUM_PARTICLES = 50;
 
 const TestPage = () => {
   const navigate = useNavigate();
-  const [selectedClass, setSelectedClass] = useState('');
-  const [selectedSubject, setSelectedSubject] = useState('');
-  const [selectedChapter, setSelectedChapter] = useState('');
+  const { classId, subject, chapterId } = useParams();
+  const { testState, setTestState } = useVoiceCommand();
+  const [selectedClass, setSelectedClass] = useState(classId ? `Class ${classId}` : '');
+  const [selectedSubject, setSelectedSubject] = useState(subject || '');
+  const [selectedChapter, setSelectedChapter] = useState(chapterId || '');
   const [isListening, setIsListening] = useState(false);
   const [voiceInput, setVoiceInput] = useState('');
   const recognitionRef = useRef(null);
@@ -38,6 +41,16 @@ const TestPage = () => {
     blob2: { x: 0, y: 0 },
     blob3: { x: 0, y: 0 }
   });
+
+  // Initialize test if parameters are provided
+  useEffect(() => {
+    if (classId && subject && chapterId) {
+      setSelectedClass(`Class ${classId}`);
+      setSelectedSubject(subject);
+      setSelectedChapter(chapterId);
+      handleStartTest();
+    }
+  }, [classId, subject, chapterId]);
 
   // Voice recognition setup
   useEffect(() => {
@@ -87,6 +100,69 @@ const TestPage = () => {
     if (chapterMatch) {
       setSelectedChapter(chapterMatch[1]);
     }
+
+    // Process test commands
+    if (inputLower.includes('generate test') || inputLower.includes('create test')) {
+      handleGenerateAITest();
+    }
+
+    if (inputLower.includes('start test') || inputLower.includes('begin test')) {
+      handleStartTest();
+    }
+
+    if (inputLower.includes('answer') && testStarted) {
+      const answerMatch = inputLower.match(/answer (.+)/);
+      if (answerMatch) {
+        const answer = answerMatch[1];
+        handleVoiceAnswer(answer);
+      }
+    }
+
+    if (inputLower.includes('next question') || inputLower.includes('next')) {
+      handleNextQuestion();
+    }
+
+    if (inputLower.includes('previous question') || inputLower.includes('previous')) {
+      handlePreviousQuestion();
+    }
+
+    if (inputLower.includes('submit test') || inputLower.includes('finish test')) {
+      handleTestCompletion();
+    }
+  };
+
+  const handleVoiceAnswer = (answer) => {
+    const currentQuestion = questions[questionIndex];
+    if (!currentQuestion) return;
+
+    let selectedAnswer = answer;
+
+    // Map voice input to answer options
+    if (currentQuestion.type === 'multiple-choice') {
+      const options = currentQuestion.options;
+      const answerLower = answer.toLowerCase();
+      
+      // Try to match by option text
+      const matchedOption = options.find(option => 
+        option.toLowerCase().includes(answerLower) ||
+        answerLower.includes(option.toLowerCase())
+      );
+      
+      if (matchedOption) {
+        selectedAnswer = matchedOption;
+      } else {
+        // Try to match by letter (A, B, C, D)
+        const letterMatch = answerLower.match(/[abcd]/);
+        if (letterMatch) {
+          const letterIndex = 'abcd'.indexOf(letterMatch[0]);
+          if (letterIndex >= 0 && letterIndex < options.length) {
+            selectedAnswer = options[letterIndex];
+          }
+        }
+      }
+    }
+
+    handleAnswer(selectedAnswer);
   };
 
   const handleMicClick = () => {
@@ -101,25 +177,92 @@ const TestPage = () => {
     }
   };
 
+  const handleGenerateAITest = async () => {
+    if (!selectedClass || !selectedSubject || !selectedChapter) {
+      alert('Please select class, subject, and chapter first');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const classNum = selectedClass.split(' ')[1];
+      const response = await fetch('http://localhost:5001/api/tests/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          classId: classNum,
+          subject: selectedSubject,
+          chapterId: selectedChapter,
+          userId: null // Replace with actual user ID when auth is implemented
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setQuestions(data.data.questions);
+        setTestStarted(true);
+        setTestState({ mode: 'taking-test', currentQuestion: 0, answers: [] });
+      } else {
+        // Fallback to generated questions
+        const generatedQuestions = generateQuestions(classNum, selectedSubject, selectedChapter);
+        setQuestions(generatedQuestions);
+        setTestStarted(true);
+        setTestState({ mode: 'taking-test', currentQuestion: 0, answers: [] });
+      }
+    } catch (error) {
+      console.error('Error generating AI test:', error);
+      // Fallback to generated questions
+      const classNum = selectedClass.split(' ')[1];
+      const generatedQuestions = generateQuestions(classNum, selectedSubject, selectedChapter);
+      setQuestions(generatedQuestions);
+      setTestStarted(true);
+      setTestState({ mode: 'taking-test', currentQuestion: 0, answers: [] });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleStartTest = async () => {
     if (selectedClass && selectedSubject && selectedChapter) {
       setIsLoading(true);
       try {
-        const response = await fetch(`http://localhost:5001/api/tests/${selectedClass.split(' ')[1]}/${selectedSubject.toLowerCase()}/${selectedChapter}`);
+        const classNum = selectedClass.split(' ')[1];
+        const response = await fetch(`http://localhost:5001/api/tests/${classNum}/${selectedSubject.toLowerCase()}/${selectedChapter}`);
         const data = await response.json();
         
         if (!data.questions || data.questions.length === 0) {
-          const generatedQuestions = generateQuestions(selectedClass.split(' ')[1], selectedSubject, selectedChapter);
+          const generatedQuestions = generateQuestions(classNum, selectedSubject, selectedChapter);
           setQuestions(generatedQuestions);
         } else {
           setQuestions(data.questions);
         }
         setTestStarted(true);
+        setTestState({ mode: 'taking-test', currentQuestion: 0, answers: [] });
       } catch (error) {
         console.error('Error fetching test:', error);
+        // Fallback to generated questions
+        const classNum = selectedClass.split(' ')[1];
+        const generatedQuestions = generateQuestions(classNum, selectedSubject, selectedChapter);
+        setQuestions(generatedQuestions);
+        setTestStarted(true);
+        setTestState({ mode: 'taking-test', currentQuestion: 0, answers: [] });
       } finally {
         setIsLoading(false);
       }
+    }
+  };
+
+  const handleNextQuestion = () => {
+    if (questionIndex < questions.length - 1) {
+      setQuestionIndex(questionIndex + 1);
+    }
+  };
+
+  const handlePreviousQuestion = () => {
+    if (questionIndex > 0) {
+      setQuestionIndex(questionIndex - 1);
     }
   };
 
@@ -155,26 +298,23 @@ const TestPage = () => {
   };
 
   const handleAnswer = (answer) => {
-    const newAnswers = [...answers, { 
+    const newAnswers = [...answers];
+    newAnswers[questionIndex] = { 
       q: questions[questionIndex].question, 
       a: answer,
       timestamp: new Date().toISOString()
-    }];
+    };
     setAnswers(newAnswers);
-    
-    const nextIndex = questionIndex + 1;
-    if (nextIndex < questions.length) {
-      setQuestionIndex(nextIndex);
-    } else {
-      handleTestCompletion();
-    }
   };
 
   const handleTestCompletion = () => {
     setTestCompleted(true);
+    setTestState({ mode: null, currentQuestion: 0, answers: [] });
     
     const correctAnswers = answers.filter((answer, index) => {
       const question = questions[index];
+      if (!answer) return false;
+      
       if (question.type === 'multiple-choice') {
         return answer.a === question.correctAnswer;
       } else if (question.type === 'true-false') {
@@ -196,6 +336,7 @@ const TestPage = () => {
     setScore(null);
     setTimeLeft(3600);
     setTestStarted(false);
+    setTestState({ mode: null, currentQuestion: 0, answers: [] });
   };
 
   const formatTime = (seconds) => {

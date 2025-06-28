@@ -573,7 +573,7 @@ const Home = () => {
         </div>
       </footer>
 
-      <style jsx>{`
+      <style>{`
         @keyframes gridMove {
           0% { transform: translate(0, 0); }
           100% { transform: translate(50px, 50px); }

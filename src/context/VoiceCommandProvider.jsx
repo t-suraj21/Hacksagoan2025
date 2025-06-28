@@ -3,8 +3,115 @@ import { useNavigate } from 'react-router-dom';
 
 const VoiceCommandContext = createContext();
 
-// Enhanced command patterns with more natural language support
+// Enhanced command patterns with better navigation support
 const commandPatterns = [
+  // Navigation commands - enhanced with more natural language
+  { 
+    pattern: /(?:go to|open|navigate to|show|take me to|visit|access|bring up|launch|start|switch to) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy|help center|community|blog|about|contact|terms|keyboard shortcuts|landing|login|register)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:i want to|can you|please) (?:go to|open|show|take me to) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy|help center|community|blog|about|contact|terms|keyboard shortcuts)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:navigate|go|move|switch) (?:to|on|in) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy|help center|community|blog|about|contact|terms|keyboard shortcuts)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:let me|allow me to|i need to) (?:go to|open|access) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy|help center|community|blog|about|contact|terms|keyboard shortcuts)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:show me|display|bring up|launch) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy|help center|community|blog|about|contact|terms|keyboard shortcuts)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:i want|i would like|i need) (?:to see|to view|to access) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy|help center|community|blog|about|contact|terms|keyboard shortcuts)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:open up|bring up|start up) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy|help center|community|blog|about|contact|terms|keyboard shortcuts)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:let's go to|let's open|let's visit) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy|help center|community|blog|about|contact|terms|keyboard shortcuts)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:main|home|landing) (?:page|screen)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:digital|book) (?:library|collection)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:my|user) (?:profile|account|settings)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:note|notes|notebook|writing) (?:page|section|area)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:test|exam|quiz|assessment) (?:page|section|area)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:help|support|assistance) (?:center|page|section)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:documentation|docs|guide|manual)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:community|forum|discussion|chat)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:blog|news|articles|posts)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:about|information|details)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:contact|reach|get in touch|support)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:terms|conditions|legal|policy)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:keyboard|shortcuts|hotkeys|commands)/i, 
+    action: 'navigation' 
+  },
+  { 
+    pattern: /(?:privacy|data protection|security)/i, 
+    action: 'navigation' 
+  },
+
+  // Note commands
+  { pattern: /(?:create|make|start|new) (?:a )?(note|notebook entry|writing)/i, action: 'create-note' },
+  { pattern: /(?:open|show|access) (?:my )?(notebook|notes|writing)/i, action: 'open-notebook' },
+  { pattern: /(?:edit|modify|change) (?:the )?(note|notebook entry)/i, action: 'edit-note' },
+  { pattern: /(?:save|store|keep) (?:the )?(note|notebook entry)/i, action: 'save-note' },
+  { pattern: /(?:delete|remove|erase|trash) (?:the )?(note|notebook entry)/i, action: 'delete-note' },
+
+  // Book commands
+  { pattern: /(?:open|read|show|find|search for) (?:the )?book (.+)/i, action: 'open-book' },
+  { pattern: /(?:read|start reading|begin reading) (.+)/i, action: 'read-book' },
+  { pattern: /(?:find|search|look for) (?:a )?book (?:about|on) (.+)/i, action: 'search-book' },
+  { pattern: /(?:show|display|filter) (?:books for|books in) class (\d+)(?: (?:subject|in) ([^ ]+))?/i, action: 'filter-library-class' },
+  { pattern: /(?:show|display|filter) (?:books for|books in) ([^ ]+)(?: class (\d+))?/i, action: 'filter-library-subject' },
+  { pattern: /(?:open|read|show) (?:the )?book (.+) (?:for|in) class (\d+) (?:subject|in) (.+)/i, action: 'open-book-advanced' },
+
+  // Test commands
+  { pattern: /(?:generate|create|make) (?:a )?(test|exam|quiz|assessment)(?: for)?(?: class (\d+))?(?: (?:subject|in) ([^ ]+))?(?: chapter (\d+))?/i, action: 'generate-test' },
   // Navigation commands
   { pattern: /(?:go to|open|navigate to|show|take me to) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy)/i, action: 'navigation' },
   { pattern: /(?:open|go to|navigate to|show) (?:the )?(library|dashboard|notebook|test(?: page)?|profile|home|documentation|privacy policy)/i, action: 'navigation' },
@@ -14,6 +121,7 @@ const commandPatterns = [
   { pattern: /(?:open|go to) (?:the )?notebook/i, action: 'open-notebook' },
   { pattern: /(?:save|store) (?:the )?(note|notebook entry)/i, action: 'save-note' },
   { pattern: /(?:delete|remove|erase) (?:the )?(note|notebook entry)/i, action: 'delete-note' },
+  { pattern: /(?:edit|modify|change) (?:the )?(note|notebook entry)/i, action: 'edit-note' },
   
   // Library commands - Enhanced with class and subject filtering
   { pattern: /(?:show|find|get) (?:books for|books in) class (\d+)(?: (?:subject|for) ([^ ]+))?/i, action: 'filter-library-class' },
@@ -21,10 +129,18 @@ const commandPatterns = [
   { pattern: /(?:open|read|show|find) (?:the )?book ([^ ]+)(?: (?:in|for) class (\d+))?(?: (?:subject|for) ([^ ]+))?/i, action: 'open-book-advanced' },
   { pattern: /(?:open|read|show|find) (?:the )?book (.+)/i, action: 'open-book' },
   { pattern: /(?:search for|find) (?:a )?book (.+)/i, action: 'search-book' },
+  { pattern: /(?:read|start reading|begin reading) (?:the )?book (.+)/i, action: 'read-book' },
+  { pattern: /(?:next page|next|continue)/i, action: 'next-page' },
+  { pattern: /(?:previous page|previous|back|go back)/i, action: 'previous-page' },
   
-  // Test commands
+  // Test commands - Enhanced with AI generation
   { pattern: /(?:start|begin|take|create) (?:a )?(test|exam|quiz)(?: for)?(?: class (\d+))?(?: (?:subject|in) ([^ ]+))?(?: chapter (\d+))?/i, action: 'start-test' },
   { pattern: /(?:open|go to) (?:the )?test(?: page)?/i, action: 'open-test' },
+  { pattern: /(?:generate|create) (?:a )?(test|exam|quiz)(?: for)?(?: class (\d+))?(?: (?:subject|in) ([^ ]+))?(?: chapter (\d+))?/i, action: 'generate-test' },
+  { pattern: /(?:answer|select) (.+)/i, action: 'answer-question' },
+  { pattern: /(?:submit|finish|end) (?:the )?(test|exam|quiz)/i, action: 'submit-test' },
+  { pattern: /(?:next question|next)/i, action: 'next-question' },
+  { pattern: /(?:previous question|previous)/i, action: 'previous-question' },
   
   // Note dictation
   { pattern: /(?:set|change|update) (?:the )?title (?:to )?(.+)/i, action: 'note-title' },
@@ -50,11 +166,15 @@ export const VoiceCommandProvider = ({ children }) => {
   const [lastTranscript, setLastTranscript] = useState('');
   const [feedback, setFeedback] = useState('');
   const [noteState, setNoteState] = useState({ mode: null, title: '', content: '' });
-  const [isEnabled, setIsEnabled] = useState(false); // Start disabled by default
+  const [isEnabled, setIsEnabled] = useState(true); // Start enabled by default
   const [confidence, setConfidence] = useState(0);
   const [error, setError] = useState('');
   const [commandHistory, setCommandHistory] = useState([]);
   const [permissionGranted, setPermissionGranted] = useState(false);
+  const [testState, setTestState] = useState({ mode: null, currentQuestion: 0, answers: [] });
+  const [readingState, setReadingState] = useState({ mode: null, currentPage: 0 });
+  const [manuallyStopped, setManuallyStopped] = useState(false);
+  const [lastCommandTime, setLastCommandTime] = useState(0);
 
   // Check for HTTPS and browser support
   useEffect(() => {
@@ -80,11 +200,11 @@ export const VoiceCommandProvider = ({ children }) => {
 
     const browserSupported = checkBrowserSupport();
     if (browserSupported) {
-      setFeedback('Click the microphone to enable voice commands');
+      setFeedback('Voice commands are active. Say "help" for available commands.');
     }
   }, []);
 
-  // Request microphone permission
+  // Request microphone permission and start automatically
   const requestMicrophonePermission = async () => {
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -102,14 +222,30 @@ export const VoiceCommandProvider = ({ children }) => {
     }
   };
 
-  // Start listening automatically on mount (only if enabled)
+  // Start listening automatically on mount
   useEffect(() => {
-    if (isEnabled && permissionGranted) {
+    const initializeVoiceCommands = async () => {
+      const permissionGranted = await requestMicrophonePermission();
+      if (permissionGranted) {
+        setIsEnabled(true);
+        setFeedback('Voice commands are active. Say "help" for available commands.');
+        speak('Voice commands are now active. Say help for available commands.');
+      }
+    };
+
+    initializeVoiceCommands();
+    return () => stopListening();
+    // eslint-disable-next-line
+  }, []);
+
+  // Start listening automatically when enabled
+  useEffect(() => {
+    if (isEnabled && permissionGranted && !manuallyStopped) {
       startListening();
     }
     return () => stopListening();
     // eslint-disable-next-line
-  }, [isEnabled, permissionGranted]);
+  }, [isEnabled, permissionGranted, manuallyStopped]);
 
   // Start speech recognition with enhanced configuration
   const startListening = () => {
@@ -129,19 +265,34 @@ export const VoiceCommandProvider = ({ children }) => {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
       
-      // Enhanced configuration
+      // Enhanced configuration for better reliability
       recognition.lang = 'en-US';
       recognition.continuous = false;
       recognition.interimResults = true;
       recognition.maxAlternatives = 3;
       
+      // Add timeout to prevent hanging
+      let recognitionTimeout;
+      
       recognition.onstart = () => {
         setListening(true);
         setError('');
         setFeedback('🎤 Listening... Say "help" for commands');
+        
+        // Set a timeout to restart if no speech detected
+        recognitionTimeout = setTimeout(() => {
+          if (recognition && isEnabled && permissionGranted) {
+            recognition.stop();
+          }
+        }, 10000); // 10 second timeout
       };
 
       recognition.onresult = (event) => {
+        // Clear timeout when speech is detected
+        if (recognitionTimeout) {
+          clearTimeout(recognitionTimeout);
+        }
+        
         let finalTranscript = '';
         let interimTranscript = '';
         let maxConfidence = 0;
@@ -169,9 +320,14 @@ export const VoiceCommandProvider = ({ children }) => {
       };
 
       recognition.onerror = (event) => {
+        // Clear timeout on error
+        if (recognitionTimeout) {
+          clearTimeout(recognitionTimeout);
+        }
+        
         console.error('Speech recognition error:', event.error);
         
-        // Handle specific errors
+        // Handle specific errors with better recovery
         switch (event.error) {
           case 'not-allowed':
             setError('Microphone access denied. Please allow microphone access in your browser settings.');
@@ -179,37 +335,74 @@ export const VoiceCommandProvider = ({ children }) => {
             setIsEnabled(false);
             break;
           case 'no-speech':
-            setError('No speech detected. Please try again.');
-            setFeedback('No speech detected');
+            // This is normal - just restart silently
+            setFeedback('No speech detected. Listening again...');
+            setTimeout(() => {
+              if (isEnabled && permissionGranted && !manuallyStopped) {
+                startListening();
+              }
+            }, 1000);
+            break;
+          case 'aborted':
+            // Recognition was stopped - restart if still enabled
+            setFeedback('Restarting voice recognition...');
+            setTimeout(() => {
+              if (isEnabled && permissionGranted && !manuallyStopped) {
+                startListening();
+              }
+            }, 500);
             break;
           case 'audio-capture':
             setError('Audio capture failed. Please check your microphone.');
             setFeedback('Audio capture failed');
+            setTimeout(() => {
+              if (isEnabled && permissionGranted && !manuallyStopped) {
+                startListening();
+              }
+            }, 2000);
             break;
           case 'network':
             setError('Network error. Please check your connection.');
             setFeedback('Network error');
+            setTimeout(() => {
+              if (isEnabled && permissionGranted && !manuallyStopped) {
+                startListening();
+              }
+            }, 2000);
+            break;
+          case 'service-not-allowed':
+            setError('Speech recognition service not allowed.');
+            setFeedback('Speech recognition service not allowed');
+            setIsEnabled(false);
             break;
           default:
             setError(`Voice recognition error: ${event.error}`);
             setFeedback('Voice recognition error');
+            setTimeout(() => {
+              if (isEnabled && permissionGranted && !manuallyStopped) {
+                startListening();
+              }
+            }, 2000);
         }
         
         setListening(false);
-        
-        // Auto-restart on certain errors
-        if (['no-speech', 'audio-capture', 'network'].includes(event.error)) {
-          setTimeout(() => {
-            if (isEnabled && permissionGranted) startListening();
-          }, 2000);
-        }
       };
 
       recognition.onend = () => {
+        // Clear timeout when recognition ends
+        if (recognitionTimeout) {
+          clearTimeout(recognitionTimeout);
+        }
+        
         setListening(false);
-        // Auto-restart if still enabled
-        if (isEnabled && permissionGranted) {
-          setTimeout(() => startListening(), 1000);
+        
+        // Auto-restart if still enabled and not manually stopped
+        if (isEnabled && permissionGranted && !manuallyStopped) {
+          setTimeout(() => {
+            if (isEnabled && permissionGranted && !manuallyStopped) {
+              startListening();
+            }
+          }, 1000);
         }
       };
 
@@ -218,13 +411,24 @@ export const VoiceCommandProvider = ({ children }) => {
     } catch (err) {
       setError(`Failed to start speech recognition: ${err.message}`);
       setFeedback('Failed to start voice commands');
+      
+      // Retry after a delay
+      setTimeout(() => {
+        if (isEnabled && permissionGranted && !manuallyStopped) {
+          startListening();
+        }
+      }, 2000);
     }
   };
 
   // Stop speech recognition
   const stopListening = () => {
     if (recognitionRef.current) {
-      recognitionRef.current.stop();
+      try {
+        recognitionRef.current.stop();
+      } catch (err) {
+        console.log('Recognition already stopped');
+      }
       setListening(false);
       setFeedback('Voice commands stopped');
     }
@@ -234,6 +438,7 @@ export const VoiceCommandProvider = ({ children }) => {
   const toggleVoiceCommands = async () => {
     if (isEnabled) {
       setIsEnabled(false);
+      setManuallyStopped(true);
       stopListening();
       setFeedback('Voice commands disabled');
     } else {
@@ -241,6 +446,7 @@ export const VoiceCommandProvider = ({ children }) => {
       const permissionGranted = await requestMicrophonePermission();
       if (permissionGranted) {
         setIsEnabled(true);
+        setManuallyStopped(false);
         setFeedback('Voice commands enabled');
       }
     }
@@ -325,9 +531,27 @@ export const VoiceCommandProvider = ({ children }) => {
   const handleCommand = async (transcript) => {
     console.log('Processing command:', transcript);
     
+    // Debounce: prevent rapid command execution
+    const now = Date.now();
+    if (now - lastCommandTime < 1000) { // 1 second debounce
+      console.log('Command ignored due to debounce');
+      return;
+    }
+    setLastCommandTime(now);
+    
     // Note dictation state machine
     if (noteState.mode === 'dictate') {
       return handleNoteDictation(transcript);
+    }
+
+    // Test state machine
+    if (testState.mode === 'taking-test') {
+      return handleTestCommands(transcript);
+    }
+
+    // Reading state machine
+    if (readingState.mode === 'reading') {
+      return handleReadingCommands(transcript);
     }
 
     let matched = false;
@@ -407,13 +631,130 @@ export const VoiceCommandProvider = ({ children }) => {
     speak('Say title, content, or save note');
   };
 
+  // Handle test commands
+  const handleTestCommands = (transcript) => {
+    if (/submit|finish|end test/i.test(transcript)) {
+      const submitBtn = document.querySelector('button[type="submit"], button:contains("Submit"), button:contains("Finish")');
+      if (submitBtn) {
+        submitBtn.click();
+        setFeedback('✅ Test submitted');
+        speak('Test submitted successfully');
+        setTestState({ mode: null, currentQuestion: 0, answers: [] });
+      } else {
+        setFeedback('❌ Could not find submit button');
+        speak('Could not find submit button');
+      }
+      return;
+    }
+
+    if (/next|next question/i.test(transcript)) {
+      const nextBtn = document.querySelector('button:contains("Next"), button[aria-label*="Next"], .next-btn');
+      if (nextBtn) {
+        nextBtn.click();
+        setFeedback('➡️ Next question');
+        speak('Next question');
+      } else {
+        setFeedback('❌ Could not find next button');
+        speak('Could not find next button');
+      }
+      return;
+    }
+
+    if (/previous|previous question|back/i.test(transcript)) {
+      const prevBtn = document.querySelector('button:contains("Previous"), button[aria-label*="Previous"], .prev-btn');
+      if (prevBtn) {
+        prevBtn.click();
+        setFeedback('⬅️ Previous question');
+        speak('Previous question');
+      } else {
+        setFeedback('❌ Could not find previous button');
+        speak('Could not find previous button');
+      }
+      return;
+    }
+
+    // Handle answer selection
+    const answerMatch = transcript.match(/answer (.+)/i);
+    if (answerMatch) {
+      const answer = answerMatch[1].toLowerCase();
+      const options = document.querySelectorAll('input[type="radio"], input[type="checkbox"], .option, .answer-option');
+      let selected = false;
+      
+      options.forEach((option, index) => {
+        const optionText = option.textContent || option.value || '';
+        if (optionText.toLowerCase().includes(answer) || 
+            (index === 0 && answer.includes('a')) ||
+            (index === 1 && answer.includes('b')) ||
+            (index === 2 && answer.includes('c')) ||
+            (index === 3 && answer.includes('d'))) {
+          option.click();
+          selected = true;
+        }
+      });
+      
+      if (selected) {
+        setFeedback(`✅ Selected answer: ${answer}`);
+        speak(`Selected answer ${answer}`);
+      } else {
+        setFeedback('❌ Could not find that answer option');
+        speak('Could not find that answer option');
+      }
+      return;
+    }
+
+    setFeedback('💡 Say "answer [option]", "next", "previous", or "submit test"');
+    speak('Say answer, next, previous, or submit test');
+  };
+
+  // Handle reading commands
+  const handleReadingCommands = (transcript) => {
+    if (/next|next page|continue/i.test(transcript)) {
+      const nextBtn = document.querySelector('button:contains("Next"), button[aria-label*="Next"], .next-page-btn');
+      if (nextBtn) {
+        nextBtn.click();
+        setFeedback('➡️ Next page');
+        speak('Next page');
+      } else {
+        setFeedback('❌ Could not find next page button');
+        speak('Could not find next page button');
+      }
+      return;
+    }
+
+    if (/previous|previous page|back/i.test(transcript)) {
+      const prevBtn = document.querySelector('button:contains("Previous"), button[aria-label*="Previous"], .prev-page-btn');
+      if (prevBtn) {
+        prevBtn.click();
+        setFeedback('⬅️ Previous page');
+        speak('Previous page');
+      } else {
+        setFeedback('❌ Could not find previous page button');
+        speak('Could not find previous page button');
+      }
+      return;
+    }
+
+    if (/stop reading|close book|exit/i.test(transcript)) {
+      setReadingState({ mode: null, currentPage: 0 });
+      setFeedback('📖 Stopped reading');
+      speak('Stopped reading');
+      return;
+    }
+
+    setFeedback('💡 Say "next page", "previous page", or "stop reading"');
+    speak('Say next page, previous page, or stop reading');
+  };
+
   // Execute commands
   const executeCommand = async (action, match, transcript) => {
     try {
       switch (action) {
         case 'navigation':
           const destination = match[1].toLowerCase();
+          
+          // Enhanced navigation mapping with more natural language support
           const navMap = {
+            // Main pages
             'library': '/library',
             'dashboard': '/dashboard',
             'notebook': '/notebook',
@@ -421,14 +762,130 @@ export const VoiceCommandProvider = ({ children }) => {
             'test page': '/test',
             'profile': '/profile',
             'home': '/home',
+            'landing': '/',
+            'main': '/home',
+            'main page': '/home',
+            'main screen': '/home',
+            
+            // Information pages
             'documentation': '/documentation',
-            'privacy policy': '/privacy-policy'
+            'docs': '/documentation',
+            'guide': '/documentation',
+            'manual': '/documentation',
+            'help center': '/help-center',
+            'help': '/help-center',
+            'support': '/help-center',
+            'assistance': '/help-center',
+            'community': '/community',
+            'forum': '/community',
+            'discussion': '/community',
+            'chat': '/community',
+            'blog': '/blog',
+            'news': '/blog',
+            'articles': '/blog',
+            'posts': '/blog',
+            'about': '/about',
+            'information': '/about',
+            'details': '/about',
+            'contact': '/contact',
+            'reach': '/contact',
+            'get in touch': '/contact',
+            'terms': '/terms',
+            'conditions': '/terms',
+            'legal': '/terms',
+            'policy': '/terms',
+            'privacy policy': '/privacy-policy',
+            'privacy': '/privacy-policy',
+            'data protection': '/privacy-policy',
+            'security': '/privacy-policy',
+            'keyboard shortcuts': '/keyboard-shortcuts',
+            'keyboard': '/keyboard-shortcuts',
+            'shortcuts': '/keyboard-shortcuts',
+            'hotkeys': '/keyboard-shortcuts',
+            'commands': '/keyboard-shortcuts',
+            
+            // Alternative names
+            'digital library': '/library',
+            'book library': '/library',
+            'book collection': '/library',
+            'my profile': '/profile',
+            'user profile': '/profile',
+            'my account': '/profile',
+            'user account': '/profile',
+            'my settings': '/profile',
+            'user settings': '/profile',
+            'notes': '/notebook',
+            'note': '/notebook',
+            'note page': '/notebook',
+            'notes page': '/notebook',
+            'note section': '/notebook',
+            'notes section': '/notebook',
+            'note area': '/notebook',
+            'notes area': '/notebook',
+            'notebook page': '/notebook',
+            'notebook section': '/notebook',
+            'notebook area': '/notebook',
+            'writing': '/notebook',
+            'writing page': '/notebook',
+            'writing section': '/notebook',
+            'writing area': '/notebook',
+            'exam': '/test',
+            'exam page': '/test',
+            'exam section': '/test',
+            'exam area': '/test',
+            'quiz': '/test',
+            'quiz page': '/test',
+            'quiz section': '/test',
+            'quiz area': '/test',
+            'assessment': '/test',
+            'assessment page': '/test',
+            'assessment section': '/test',
+            'assessment area': '/test',
+            'test page': '/test',
+            'test section': '/test',
+            'test area': '/test',
+            'help center': '/help-center',
+            'help page': '/help-center',
+            'help section': '/help-center',
+            'support center': '/help-center',
+            'support page': '/help-center',
+            'support section': '/help-center',
+            'assistance center': '/help-center',
+            'assistance page': '/help-center',
+            'assistance section': '/help-center'
           };
           
           if (navMap[destination]) {
-            navigate(navMap[destination]);
-            setFeedback(`🚀 Navigating to ${destination}`);
+            const route = navMap[destination];
+            navigate(route);
+            
+            // Enhanced feedback with more natural responses
+            const feedbackMessages = {
+              '/library': '📚 Opening the digital library',
+              '/dashboard': '📊 Opening your dashboard',
+              '/notebook': '📓 Opening your notebook',
+              '/test': '📝 Opening the test section',
+              '/profile': '👤 Opening your profile',
+              '/home': '🏠 Going to the home page',
+              '/': '🏠 Going to the landing page',
+              '/documentation': '📖 Opening the documentation',
+              '/help-center': '❓ Opening the help center',
+              '/community': '👥 Opening the community forum',
+              '/blog': '📰 Opening the blog',
+              '/about': 'ℹ️ Opening the about page',
+              '/contact': '📞 Opening the contact page',
+              '/terms': '📋 Opening the terms and conditions',
+              '/privacy-policy': '🔒 Opening the privacy policy',
+              '/keyboard-shortcuts': '⌨️ Opening keyboard shortcuts'
+            };
+            
+            const feedback = feedbackMessages[route] || `🚀 Navigating to ${destination}`;
+            setFeedback(feedback);
             speak(`Opening ${destination}`);
+          } else {
+            // Handle unknown destinations with helpful suggestions
+            setFeedback(`❓ I don't recognize "${destination}". Try saying "help" for available pages.`);
+            speak(`I don't recognize ${destination}. Try saying help for available pages.`);
           }
           break;
 
@@ -467,6 +924,19 @@ export const VoiceCommandProvider = ({ children }) => {
           navigate('/notebook');
           setFeedback('📓 Opening notebook');
           speak('Opening notebook');
+          break;
+
+        case 'edit-note':
+          const editBtn = document.querySelector('button[aria-label*="Edit"], button:contains("Edit"), .edit-btn');
+          if (editBtn) {
+            editBtn.click();
+            setFeedback('📝 Editing note. Say "title [your title]", "content [your content]", then "save note"');
+            speak('Editing note. You can now dictate the title and content');
+            setNoteState({ mode: 'dictate', title: '', content: '' });
+          } else {
+            setFeedback('❌ Could not find edit button');
+            speak('Could not find edit button');
+          }
           break;
 
         case 'filter-library-class': {
@@ -613,6 +1083,61 @@ export const VoiceCommandProvider = ({ children }) => {
           }, 1500);
           break;
 
+        case 'read-book':
+          navigate('/library');
+          setFeedback(`📖 Opening ${match[1]} for reading`);
+          speak(`Opening ${match[1]} for reading`);
+          
+          setTimeout(() => {
+            const bookCards = document.querySelectorAll('[data-book-title], .book-card, .card');
+            let found = false;
+            bookCards.forEach(card => {
+              const title = card.getAttribute('data-book-title') || card.textContent || '';
+              if (title.toLowerCase().includes(match[1].toLowerCase())) {
+                card.click();
+                found = true;
+              }
+            });
+            
+            if (found) {
+              setReadingState({ mode: 'reading', currentPage: 0 });
+              setFeedback(`📖 Now reading ${match[1]}. Say "next page", "previous page", or "stop reading"`);
+              speak(`Now reading ${match[1]}. Say next page, previous page, or stop reading`);
+            } else {
+              setFeedback(`❌ Book not found: ${match[1]}`);
+              speak(`Book ${match[1]} not found`);
+            }
+          }, 1500);
+          break;
+
+        case 'next-page':
+          if (readingState.mode === 'reading') {
+            const nextBtn = document.querySelector('button:contains("Next"), button[aria-label*="Next"], .next-page-btn');
+            if (nextBtn) {
+              nextBtn.click();
+              setFeedback('➡️ Next page');
+              speak('Next page');
+            } else {
+              setFeedback('❌ Could not find next page button');
+              speak('Could not find next page button');
+            }
+          }
+          break;
+
+        case 'previous-page':
+          if (readingState.mode === 'reading') {
+            const prevBtn = document.querySelector('button:contains("Previous"), button[aria-label*="Previous"], .prev-page-btn');
+            if (prevBtn) {
+              prevBtn.click();
+              setFeedback('⬅️ Previous page');
+              speak('Previous page');
+            } else {
+              setFeedback('❌ Could not find previous page button');
+              speak('Could not find previous page button');
+            }
+          }
+          break;
+
         case 'start-test':
           const testClass = match[2] || '1';
           const testSubject = match[3] || 'math';
@@ -622,28 +1147,155 @@ export const VoiceCommandProvider = ({ children }) => {
           speak(`Starting test for class ${testClass} ${testSubject} chapter ${testChapter}`);
           break;
 
+        case 'generate-test':
+          const genClass = match[2] || '1';
+          const genSubject = match[3] || 'math';
+          const genChapter = match[4] || '1';
+          
+          navigate('/test');
+          setFeedback(`🤖 Generating AI test for class ${genClass} ${genSubject} chapter ${genChapter}`);
+          speak(`Generating AI test for class ${genClass} ${genSubject} chapter ${genChapter}`);
+          
+          // Simulate AI test generation
+          setTimeout(() => {
+            setTestState({ mode: 'taking-test', currentQuestion: 0, answers: [] });
+            setFeedback('🤖 AI test generated! Say "answer [option]", "next", or "submit test"');
+            speak('AI test generated! You can now answer questions using voice commands');
+          }, 2000);
+          break;
+
         case 'open-test':
           navigate('/test');
           setFeedback('📝 Opening test page');
           speak('Opening test page');
           break;
 
+        case 'answer-question':
+          const answer = match[1].toLowerCase();
+          const options = document.querySelectorAll('input[type="radio"], input[type="checkbox"], .option, .answer-option');
+          let selected = false;
+          
+          options.forEach((option, index) => {
+            const optionText = option.textContent || option.value || '';
+            if (optionText.toLowerCase().includes(answer) || 
+                (index === 0 && answer.includes('a')) ||
+                (index === 1 && answer.includes('b')) ||
+                (index === 2 && answer.includes('c')) ||
+                (index === 3 && answer.includes('d'))) {
+              option.click();
+              selected = true;
+            }
+          });
+          
+          if (selected) {
+            setFeedback(`✅ Selected answer: ${answer}`);
+            speak(`Selected answer ${answer}`);
+          } else {
+            setFeedback('❌ Could not find that answer option');
+            speak('Could not find that answer option');
+          }
+          break;
+
+        case 'submit-test':
+          const submitBtn = document.querySelector('button[type="submit"], button:contains("Submit"), button:contains("Finish")');
+          if (submitBtn) {
+            submitBtn.click();
+            setFeedback('✅ Test submitted');
+            speak('Test submitted successfully');
+            setTestState({ mode: null, currentQuestion: 0, answers: [] });
+          } else {
+            setFeedback('❌ Could not find submit button');
+            speak('Could not find submit button');
+          }
+          break;
+
+        case 'next-question':
+          const nextBtn = document.querySelector('button:contains("Next"), button[aria-label*="Next"], .next-btn');
+          if (nextBtn) {
+            nextBtn.click();
+            setFeedback('➡️ Next question');
+            speak('Next question');
+          } else {
+            setFeedback('❌ Could not find next button');
+            speak('Could not find next button');
+          }
+          break;
+
+        case 'previous-question':
+          const prevBtn = document.querySelector('button:contains("Previous"), button[aria-label*="Previous"], .prev-btn');
+          if (prevBtn) {
+            prevBtn.click();
+            setFeedback('⬅️ Previous question');
+            speak('Previous question');
+          } else {
+            setFeedback('❌ Could not find previous button');
+            speak('Could not find previous button');
+          }
+          break;
+
         case 'stop-listening':
           setIsEnabled(false);
+          setManuallyStopped(true);
           setFeedback('🔇 Voice commands disabled');
           speak('Voice commands disabled');
           break;
 
         case 'start-listening':
           setIsEnabled(true);
+          setManuallyStopped(false);
           setFeedback('🎤 Voice commands enabled');
           speak('Voice commands enabled');
           break;
 
         case 'show-help':
-          const helpText = `Available commands: Navigate to pages like library, dashboard, notebook, test, profile, home. Create notes, open books, start tests, and more. Say "help" anytime for this list.`;
-          setFeedback('💡 ' + helpText);
-          speak('Here are the available commands. You can navigate to pages like library, dashboard, notebook, test, profile, and home. You can also create notes, open books, and start tests. Say help anytime for this list.');
+          const helpText = `Available voice commands:
+
+📱 **Navigation Commands:**
+• "Go to library" or "Open the library"
+• "Take me to dashboard" or "Show dashboard"
+• "Navigate to notebook" or "Open my notes"
+• "Open test page" or "Show tests"
+• "Go to profile" or "Open my account"
+• "Go home" or "Take me to home page"
+• "Open documentation" or "Show help"
+• "Go to community" or "Open forum"
+• "Show blog" or "Open news"
+• "Open about page" or "Show contact"
+
+📝 **Note Commands:**
+• "Create a new note"
+• "Save note" or "Save the note"
+• "Delete note" or "Remove note"
+• "Edit note" or "Modify note"
+
+📚 **Book Commands:**
+• "Open book mathematics" or "Read book science"
+• "Find book about history"
+• "Show books for class 8"
+• "Filter books by science"
+
+📋 **Test Commands:**
+• "Generate test for class 8 science chapter 3"
+• "Start test" or "Begin exam"
+• "Answer option A" or "Select answer B"
+• "Next question" or "Previous question"
+• "Submit test" or "Finish exam"
+
+📖 **Reading Commands:**
+• "Next page" or "Continue reading"
+• "Previous page" or "Go back"
+• "Stop reading" or "Close book"
+
+🎤 **System Commands:**
+• "Help" or "What can I say"
+• "Stop listening" or "Disable voice"
+• "Start listening" or "Enable voice"
+• "Clear all" or "Reset history"
+
+Try saying any of these commands naturally!`;
+          
+          setFeedback('💡 ' + helpText.split('\n')[0]);
+          speak('Here are the available voice commands. You can navigate to pages like library, dashboard, notebook, test, profile, and home. You can also create notes, open books, and start tests. Say help anytime for this list.');
           break;
 
         case 'clear-all':
@@ -670,6 +1322,17 @@ export const VoiceCommandProvider = ({ children }) => {
           speak('Closing window');
           break;
 
+        case 'stop-reading':
+          if (readingState.mode === 'reading') {
+            setReadingState({ mode: null, currentPage: 0 });
+            setFeedback('📖 Stopped reading. You can say "open library" to browse more books.');
+            speak('Stopped reading. You can say open library to browse more books.');
+          } else {
+            setFeedback('❌ Not currently reading a book');
+            speak('Not currently reading a book');
+          }
+          break;
+
         default:
           setFeedback('❓ Command recognized but not implemented');
           speak('Command recognized but not implemented');
@@ -693,11 +1356,13 @@ export const VoiceCommandProvider = ({ children }) => {
       isEnabled,
       toggleVoiceCommands,
       commandHistory,
-      noteState
+      noteState,
+      testState,
+      readingState
     }}>
       {children}
     </VoiceCommandContext.Provider>
   );
 };
 
-export const useVoiceCommand = () => useContext(VoiceCommandContext); 
+export const useVoiceCommand = () => useContext(VoiceCommandContext);

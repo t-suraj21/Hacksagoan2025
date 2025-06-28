@@ -11,7 +11,10 @@ const VoiceCommandUI = () => {
     isEnabled, 
     toggleVoiceCommands, 
     commandHistory,
-    lastTranscript 
+    lastTranscript,
+    noteState,
+    testState,
+    readingState
   } = useVoiceCommand();
   
   const [showHistory, setShowHistory] = useState(false);
@@ -31,13 +34,25 @@ const VoiceCommandUI = () => {
     return 'Ready';
   };
 
+  const getModeIndicator = () => {
+    if (noteState.mode === 'dictate') return '📝 Note Mode';
+    if (testState.mode === 'taking-test') return '📝 Test Mode';
+    if (readingState.mode === 'reading') return '📖 Reading Mode';
+    return '';
+  };
+
   const helpCommands = [
     { command: 'Go to library', description: 'Navigate to the library page' },
     { command: 'Open dashboard', description: 'Navigate to the dashboard' },
     { command: 'Create a new note', description: 'Create a new notebook entry' },
     { command: 'Open book Science class 5', description: 'Open a specific book' },
+    { command: 'Read book Mathematics', description: 'Start reading a book with voice controls' },
+    { command: 'Generate test for class 8 Science chapter 3', description: 'Create an AI-generated test' },
     { command: 'Start test for class 8 Science chapter 3', description: 'Start a specific test' },
+    { command: 'Answer option A', description: 'Select an answer in test mode' },
+    { command: 'Next page', description: 'Go to next page while reading' },
     { command: 'Save note', description: 'Save the current note' },
+    { command: 'Delete note', description: 'Delete the current note' },
     { command: 'Help', description: 'Show this help menu' },
     { command: 'Stop listening', description: 'Disable voice commands' },
     { command: 'Go back', description: 'Navigate to previous page' },
@@ -72,6 +87,9 @@ const VoiceCommandUI = () => {
                 <span className="text-xs text-gray-300">({Math.round(confidence * 100)}%)</span>
               )}
             </div>
+            {getModeIndicator() && (
+              <div className="text-xs text-yellow-300 mb-1">{getModeIndicator()}</div>
+            )}
             <p className="text-sm">{feedback}</p>
             {lastTranscript && (
               <p className="text-xs text-gray-300 mt-1">"{lastTranscript}"</p>
@@ -153,7 +171,7 @@ const VoiceCommandUI = () => {
               </div>
               <div className="mt-4 p-3 bg-purple-50 rounded-lg">
                 <p className="text-sm text-purple-800">
-                  <strong>Tip:</strong> Speak clearly and naturally. The system will understand various ways to say the same command.
+                  <strong>Tip:</strong> Voice commands are now active automatically! Speak clearly and naturally. The system will understand various ways to say the same command.
                 </p>
               </div>
             </div>

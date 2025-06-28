@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { SettingsProvider } from './context/SettingsContext';
 import { VoiceCommandProvider } from './context/VoiceCommandProvider';
 import VoiceCommandUI from './components/VoiceCommandUI';
+import VoiceCommandDebug from './components/VoiceCommandDebug';
+import VoiceCommandDemo from './components/VoiceCommandDemo';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -148,6 +150,8 @@ function App() {
           
           {/* Voice Command UI - appears on all pages */}
           <VoiceCommandUI />
+          <VoiceCommandDebug />
+          <VoiceCommandDemo />
         </VoiceCommandProvider>
       </Router>
     </SettingsProvider>

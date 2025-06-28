@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Mic, MicOff, BookOpen, Bookmark, Volume2, Globe, Info, History, ArrowRight, ArrowLeft, Bell, Settings, User } from 'lucide-react';
+import { useVoiceCommand } from '../context/VoiceCommandProvider';
 
 const API_KEY = 'AIzaSyCNk9tzPuYdptGt0xXWiY5DB1ti1u58vmk';
 const BASE_URL = 'https://www.googleapis.com/books/v1/volumes';
@@ -61,6 +62,7 @@ const NUM_PARTICLES = 30;
 
 const Library = () => {
   const navigate = useNavigate();
+  const { readingState, setReadingState } = useVoiceCommand();
   const [books, setBooks] = useState([]);
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -86,6 +88,14 @@ const Library = () => {
     blob2: { x: 0, y: 0 },
     blob3: { x: 0, y: 0 }
   });
+
+  // Handle voice command reading state changes
+  useEffect(() => {
+    if (readingState.mode === 'reading') {
+      // Voice command system has initiated reading mode
+      // This will be handled by the voice command system
+    }
+  }, [readingState]);
 
   // Voice recognition setup
   useEffect(() => {
@@ -304,6 +314,9 @@ const Library = () => {
     const newHistory = [historyItem, ...readingHistory.filter(item => item.id !== book.id)].slice(0, 5);
     setReadingHistory(newHistory);
     localStorage.setItem('readingHistory', JSON.stringify(newHistory));
+    
+    // Set reading state for voice commands
+    setReadingState({ mode: 'reading', currentPage: 0 });
     
     navigate(`/reader/book/${book.id}`);
   };
