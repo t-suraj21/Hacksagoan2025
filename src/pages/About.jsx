@@ -140,6 +140,65 @@ const About = () => {
         .magnetic-cursor:hover {
           transform: scale(1.05) translateZ(10px);
         }
+
+        @keyframes globe-rotate-3d {
+          0% {
+            transform: perspective(600px) rotateY(0deg) rotateX(0deg);
+          }
+          100% {
+            transform: perspective(600px) rotateY(360deg) rotateX(25deg);
+          }
+        }
+        .globe-3d-rotate {
+          animation: globe-rotate-3d 8s linear infinite;
+          transform-style: preserve-3d;
+          will-change: transform;
+          display: inline-block;
+        }
+
+        /* 3D Cube Animation */
+        .cube-3d-container {
+          perspective: 1200px;
+          width: 22rem;
+          height: 22rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .cube-3d {
+          width: 16rem;
+          height: 16rem;
+          position: relative;
+          transform-style: preserve-3d;
+          animation: cube-rotate-3d 4s linear infinite;
+        }
+        .cube-face {
+          position: absolute;
+          width: 16rem;
+          height: 16rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 2.5rem;
+          font-weight: bold;
+          color: #e9d5ff;
+          background: rgba(147, 51, 234, 0.10);
+          border: 2.5px solid #a78bfa;
+          border-radius: 1.5rem;
+          box-shadow: 0 0 32px 0 rgba(147, 51, 234, 0.18);
+          text-align: center;
+          user-select: none;
+        }
+        .cube-face-front  { transform: rotateY(0deg) translateZ(8rem); }
+        .cube-face-back   { transform: rotateY(180deg) translateZ(8rem); }
+        .cube-face-right  { transform: rotateY(90deg) translateZ(8rem); }
+        .cube-face-left   { transform: rotateY(-90deg) translateZ(8rem); }
+        .cube-face-top    { transform: rotateX(90deg) translateZ(8rem); }
+        .cube-face-bottom { transform: rotateX(-90deg) translateZ(8rem); }
+        @keyframes cube-rotate-3d {
+          0% { transform: rotateX(-20deg) rotateY(0deg); }
+          100% { transform: rotateX(-20deg) rotateY(360deg); }
+        }
       `}</style>
 
       {/* Blob Morph Background Shapes */}
@@ -183,31 +242,6 @@ const About = () => {
               Garur is more than just an educational platform. We're a movement dedicated to making quality education 
               accessible to blind and visually impaired learners worldwide through innovative technology and inclusive design.
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Mission Section */}
-      <section className="relative py-16">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h3 className="text-4xl font-bold text-white mb-6 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">Our Mission</h3>
-              <p className="text-lg text-gray-300 leading-relaxed mb-6">
-                To break down barriers in education by creating an inclusive learning environment where every student, 
-                regardless of their visual abilities, can thrive and achieve their full potential.
-              </p>
-              <p className="text-lg text-gray-300 leading-relaxed">
-                We believe that accessibility isn't just a feature—it's the foundation of everything we build. 
-                Every tool, every resource, and every interaction is designed with the needs of visually impaired 
-                learners in mind.
-              </p>
-            </div>
-            <div className="relative">
-              <div className="card-3d group w-full h-96 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-3xl backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-purple-500/50 transition-all duration-700 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20 flex items-center justify-center">
-                <Globe className="w-32 h-32 text-purple-300 group-hover:text-purple-200 transition-colors duration-300" />
-              </div>
-            </div>
           </div>
         </div>
       </section>
