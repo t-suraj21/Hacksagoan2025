@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Book, FileText, Headphones, Keyboard, ArrowRight, Star, Users, Award, Zap, ChevronLeft, ChevronRight, X, ExternalLink, Menu, X as CloseIcon } from 'lucide-react';
+import { Book, FileText, Headphones, Keyboard, ArrowRight, Star, Users, Award, Zap, ChevronLeft, ChevronRight, X, ExternalLink, Menu, X as CloseIcon, Play, Volume2, VolumeX } from 'lucide-react';
 import { isAuthenticated, logout } from '../utils/auth';
 
 const Landing = () => {
@@ -9,7 +9,12 @@ const Landing = () => {
   const [scrambledText, setScrambledText] = useState('Learn Without Limits');
   const [particles, setParticles] = useState([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isVideoMuted, setIsVideoMuted] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const heroRef = useRef(null);
+  const videoRef = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedWork, setSelectedWork] = useState(null);
   const [openFAQ, setOpenFAQ] = useState(null);
@@ -90,6 +95,31 @@ const Landing = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  // Handle keyboard events for video modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isVideoModalOpen) {
+        closeVideoModal();
+      }
+      if (e.key === ' ' && isVideoModalOpen) {
+        e.preventDefault();
+        toggleVideoPlay();
+      }
+    };
+
+    if (isVideoModalOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isVideoModalOpen]);
+
   // Handle navigation functions
   const handleGetStarted = () => {
     if (isLoggedIn) {
@@ -109,10 +139,48 @@ const Landing = () => {
   };
 
   const handleDemoClick = () => {
-    // Scroll to work showcase section
-    const showcaseSection = document.getElementById('work-showcase');
-    if (showcaseSection) {
-      showcaseSection.scrollIntoView({ behavior: 'smooth' });
+    resetVideoModal();
+    setIsVideoModalOpen(true);
+  };
+
+  const closeVideoModal = () => {
+    setIsVideoModalOpen(false);
+    resetVideoModal();
+  };
+
+  const toggleVideoPlay = () => {
+    if (videoRef.current) {
+      if (isVideoPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsVideoPlaying(!isVideoPlaying);
+    }
+  };
+
+  const toggleVideoMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isVideoMuted;
+      setIsVideoMuted(!isVideoMuted);
+    }
+  };
+
+  const handleVideoEnded = () => {
+    setIsVideoPlaying(false);
+  };
+
+  const handleVideoError = () => {
+    setVideoError(true);
+    setIsVideoPlaying(false);
+  };
+
+  const resetVideoModal = () => {
+    setVideoError(false);
+    setIsVideoPlaying(false);
+    setIsVideoMuted(false);
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
     }
   };
 
@@ -367,6 +435,53 @@ const Landing = () => {
 
         .mobile-menu.open {
           transform: translateX(0);
+        }
+
+        .video-modal-enter {
+          animation: videoModalEnter 0.3s ease-out forwards;
+        }
+
+        .video-modal-exit {
+          animation: videoModalExit 0.3s ease-in forwards;
+        }
+
+        @keyframes videoModalEnter {
+          0% {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
+        @keyframes videoModalExit {
+          0% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+          }
+        }
+
+        .video-controls {
+          transition: opacity 0.3s ease;
+        }
+
+        .video-container:hover .video-controls {
+          opacity: 1;
+        }
+
+        .video-play-button {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .video-play-button:hover {
+          transform: scale(1.1);
+          box-shadow: 0 0 30px rgba(147, 51, 234, 0.6);
         }
       `}</style>
 
@@ -721,6 +836,116 @@ const Landing = () => {
               <p className="text-lg leading-relaxed text-gray-300 mb-6">
                 {selectedWork.description}
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Video Demo Modal */}
+      {isVideoModalOpen && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 video-modal-enter" onClick={closeVideoModal}>
+          <div className="relative max-w-4xl w-full max-h-[90vh] bg-black/20 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
+            {/* Video Container */}
+            <div className="relative aspect-video bg-black video-container">
+              {videoError ? (
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/20 to-blue-900/20">
+                  <div className="text-center p-8">
+                    <div className="w-20 h-20 mx-auto mb-4 bg-white/10 rounded-full flex items-center justify-center">
+                      <Play className="w-10 h-10 text-white/60" />
+                    </div>
+                    <h4 className="text-xl font-semibold text-white mb-2">Demo Video Unavailable</h4>
+                    <p className="text-gray-400 mb-4 max-w-md">
+                      The demo video is currently unavailable. Please check back later or contact our support team.
+                    </p>
+                    <button
+                      onClick={resetVideoModal}
+                      className="px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors duration-300"
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <video
+                    ref={videoRef}
+                    className="w-full h-full object-cover"
+                    poster="https://images.pexels.com/photos/5699456/pexels-photo-5699456.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
+                    onEnded={handleVideoEnded}
+                    onPlay={() => setIsVideoPlaying(true)}
+                    onPause={() => setIsVideoPlaying(false)}
+                    onError={handleVideoError}
+                    controls={false}
+                  >
+                    <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  
+                  {/* Video Overlay Controls */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {!isVideoPlaying && (
+                      <button
+                        onClick={toggleVideoPlay}
+                        className="group bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-6 rounded-full transition-all duration-300 transform hover:scale-110 neon-glow video-play-button"
+                        aria-label="Play video"
+                      >
+                        <Play className="w-12 h-12 ml-1" />
+                      </button>
+                    )}
+                  </div>
+                  
+                  {/* Video Controls Bar */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 video-controls opacity-0">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <button
+                          onClick={toggleVideoPlay}
+                          className="text-white hover:text-purple-300 transition-colors duration-300"
+                          aria-label={isVideoPlaying ? "Pause video" : "Play video"}
+                        >
+                          {isVideoPlaying ? (
+                            <div className="w-8 h-8 flex items-center justify-center">
+                              <div className="w-3 h-6 border-l-2 border-r-2 border-white"></div>
+                            </div>
+                          ) : (
+                            <Play className="w-8 h-8 ml-1" />
+                          )}
+                        </button>
+                        <button
+                          onClick={toggleVideoMute}
+                          className="text-white hover:text-purple-300 transition-colors duration-300"
+                          aria-label={isVideoMuted ? "Unmute video" : "Mute video"}
+                        >
+                          {isVideoMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+                        </button>
+                      </div>
+                      <button
+                        onClick={closeVideoModal}
+                        className="text-white hover:text-red-400 transition-colors duration-300"
+                        aria-label="Close video modal"
+                      >
+                        <X className="w-6 h-6" />
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+            
+            {/* Video Info */}
+            <div className="p-6">
+              <h3 className="text-2xl font-bold text-white mb-2">Garur Platform Demo</h3>
+              <p className="text-gray-300 mb-4">
+                Experience the power of accessible learning with our comprehensive demo showcasing voice navigation, 
+                screen reader compatibility, and intuitive keyboard controls designed specifically for blind and visually impaired learners.
+              </p>
+              <div className="flex items-center space-x-4 text-sm text-gray-400">
+                <span>Duration: 2:30</span>
+                <span>•</span>
+                <span>Accessibility Features</span>
+                <span>•</span>
+                <span>Voice Navigation</span>
+              </div>
             </div>
           </div>
         </div>
