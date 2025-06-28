@@ -1,6 +1,9 @@
 import React from 'react';
 import { ArrowLeft, Users, Target, Heart, Award, Globe, BookOpen, Zap, ChevronRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
+import suraj from '../assets/suraj.jpg';
+import vardhman from '../assets/vardhman.jpg';
+import nandini from '../assets/nandini.jpg';
 
 const About = () => {
   const navigate = useNavigate();
@@ -8,28 +11,25 @@ const About = () => {
   const navigateToHome = () => navigate('/');
 
   const teamMembers = [
-    
     {
-      name: 'Michael Chen',
-      role: 'CTO',
-      description: 'Software engineer specializing in assistive technologies and audio processing systems.',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+      name: 'Suraj Kumar',
+      role: 'Backend Developer',
+      avatar: suraj,
+      color: 'from-blue-500 to-cyan-500'
+    },
+    {
+      name: 'Vardhman Kumar',
+      role: 'Frontend Developer',
+      avatar: vardhman,
       color: 'from-purple-500 to-pink-500'
     },
     {
-      name: 'Dr. Emily Rodriguez',
-      role: 'Head of Accessibility',
-      description: 'Accessibility consultant with expertise in WCAG guidelines and inclusive design.',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+      name: 'Nandini Kirar',
+      role: 'UI/UX Designer',
+      avatar: nandini,
       color: 'from-green-500 to-emerald-500'
     },
-    {
-      name: 'David Kim',
-      role: 'Lead UX Designer',
-      description: 'User experience designer focused on creating intuitive interfaces for all users.',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-      color: 'from-orange-500 to-red-500'
-    }
+   
   ];
 
   const values = [
