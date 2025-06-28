@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Book, FileText, Headphones, Keyboard, ArrowRight, Star, Users, Award, Zap, ChevronLeft, ChevronRight, X, ExternalLink, Menu, X as CloseIcon, Play, Volume2, VolumeX } from 'lucide-react';
 import { isAuthenticated, logout } from '../utils/auth';
+import demoVideo from '../assets/demovide.mp4';
 
 const Landing = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -226,6 +227,24 @@ const Landing = () => {
       content: 'The most accessible learning platform I have ever used. Everything is well-organized.',
       author: 'Michael Chen',
       role: 'Teacher',
+      rating: 5
+    },
+    {
+      content: 'I love the audio features and voice navigation. It makes studying so much easier!',
+      author: 'Priya Singh',
+      role: 'Student',
+      rating: 5
+    },
+    {
+      content: 'The support team is fantastic and the resources are top-notch.',
+      author: 'Amit Patel',
+      role: 'Parent',
+      rating: 4
+    },
+    {
+      content: "Garur's accessibility features are a game changer for visually impaired learners.",
+      author: 'Riya Das',
+      role: 'Accessibility Advocate',
       rating: 5
     }
   ];
@@ -483,6 +502,64 @@ const Landing = () => {
           transform: scale(1.1);
           box-shadow: 0 0 30px rgba(147, 51, 234, 0.6);
         }
+
+        .testimonial-marquee {
+          display: flex;
+          width: max-content;
+          animation: testimonial-scroll 24s linear infinite;
+        }
+        @keyframes testimonial-scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+
+        /* 3D Cube Animation for Mission Section */
+        .cube-3d-container {
+          perspective: 1200px;
+          width: 22rem;
+          height: 22rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .cube-3d {
+          width: 16rem;
+          height: 16rem;
+          position: relative;
+          transform-style: preserve-3d;
+          animation: cube-rotate-3d 4s linear infinite;
+        }
+        .cube-face {
+          position: absolute;
+          width: 16rem;
+          height: 16rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 2.5rem;
+          font-weight: bold;
+          color: #e9d5ff;
+          background: rgba(147, 51, 234, 0.10);
+          border: 2.5px solid #a78bfa;
+          border-radius: 1.5rem;
+          box-shadow: 0 0 32px 0 rgba(147, 51, 234, 0.18);
+          text-align: center;
+          user-select: none;
+        }
+        .cube-face-front  { transform: rotateY(0deg) translateZ(8rem); }
+        .cube-face-back   { transform: rotateY(180deg) translateZ(8rem); }
+        .cube-face-right  { transform: rotateY(90deg) translateZ(8rem); }
+        .cube-face-left   { transform: rotateY(-90deg) translateZ(8rem); }
+        .cube-face-top    { transform: rotateX(90deg) translateZ(8rem); }
+        .cube-face-bottom { transform: rotateX(-90deg) translateZ(8rem); }
+        @keyframes cube-rotate-3d {
+          0% { transform: rotateX(-20deg) rotateY(0deg) rotateZ(0deg); }
+          20% { transform: rotateX(90deg) rotateY(72deg) rotateZ(36deg); }
+          40% { transform: rotateX(180deg) rotateY(144deg) rotateZ(72deg); }
+          60% { transform: rotateX(270deg) rotateY(216deg) rotateZ(108deg); }
+          80% { transform: rotateX(360deg) rotateY(288deg) rotateZ(144deg); }
+          100% { transform: rotateX(400deg) rotateY(360deg) rotateZ(180deg); }
+        }
       `}</style>
 
       {/* Blob Morph Background Shapes */}
@@ -670,6 +747,38 @@ const Landing = () => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mission Section with 3D Rotating Cube */}
+      <section className="relative py-20">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h3 className="text-4xl font-bold text-white mb-6 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">Our Mission</h3>
+              <p className="text-lg text-gray-300 leading-relaxed mb-6">
+                To break down barriers in education by creating an inclusive learning environment where every student, 
+                regardless of their visual abilities, can thrive and achieve their full potential.
+              </p>
+              <p className="text-lg text-gray-300 leading-relaxed">
+                We believe that accessibility isn't just a feature—it's the foundation of everything we build. 
+                Every tool, every resource, and every interaction is designed with the needs of visually impaired 
+                learners in mind.
+              </p>
+            </div>
+            <div className="flex items-center justify-center w-full h-[22rem]">
+              <div className="cube-3d-container flex items-center justify-center w-full h-full">
+                <div className="cube-3d">
+                  <div className="cube-face cube-face-front">GARUR</div>
+                  <div className="cube-face cube-face-back">ACCESS</div>
+                  <div className="cube-face cube-face-right">LEARN</div>
+                  <div className="cube-face cube-face-left">INNOVATE</div>
+                  <div className="cube-face cube-face-top">INCLUDE</div>
+                  <div className="cube-face cube-face-bottom">INSPIRE</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -877,7 +986,7 @@ const Landing = () => {
                     onError={handleVideoError}
                     controls={false}
                   >
-                    <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4" />
+                    <source src={demoVideo} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                   
@@ -960,33 +1069,37 @@ const Landing = () => {
             </div>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">Real stories from our community</p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="card-3d group p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/20 hover:border-purple-500/50 hover:bg-white/10 transition-all duration-700 transform hover:scale-105 cursor-pointer relative overflow-hidden magnetic-cursor"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-yellow-400 fill-current group-hover:scale-110 transition-transform duration-300" style={{transitionDelay: `${i * 100}ms`}} />
-                    ))}
-                  </div>
-                  <p className="text-gray-300 mb-6 text-lg leading-relaxed group-hover:text-white transition-colors duration-300">"{testimonial.content}"</p>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-purple-500/50 group-hover:scale-110 transition-all duration-300 neon-glow">
-                      <span className="text-white font-semibold">{testimonial.author.charAt(0)}</span>
+          {/* Marquee Animation */}
+          <div className="overflow-x-hidden overflow-y-hidden relative w-full">
+            <div className="testimonial-marquee">
+              {[...testimonials, ...testimonials].map((testimonial, index) => (
+                <div
+                  key={index}
+                  className="card-3d group p-8 mx-4 min-w-[280px] w-80 md:w-96 lg:w-[420px] max-w-xs md:max-w-sm lg:max-w-md rounded-3xl bg-white/5 backdrop-blur-xl border border-white/20 hover:border-purple-500/50 hover:bg-white/10 transition-all duration-700 transform hover:scale-105 cursor-pointer relative overflow-hidden magnetic-cursor flex-shrink-0"
+                  tabIndex={0}
+                  aria-label={`Testimonial from ${testimonial.author}, ${testimonial.role}`}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="relative z-10">
+                    <div className="flex items-center mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="w-5 h-5 text-yellow-400 fill-current group-hover:scale-110 transition-transform duration-300" style={{transitionDelay: `${i * 100}ms`}} />
+                      ))}
                     </div>
-                    <div>
-                      <p className="text-white font-semibold group-hover:text-purple-200 transition-colors duration-300">{testimonial.author}</p>
-                      <p className="text-purple-300 text-sm group-hover:text-purple-200 transition-colors duration-300">{testimonial.role}</p>
+                    <p className="text-gray-300 mb-6 text-lg leading-relaxed group-hover:text-white transition-colors duration-300">"{testimonial.content}"</p>
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-purple-500/50 group-hover:scale-110 transition-all duration-300 neon-glow">
+                        <span className="text-white font-semibold">{testimonial.author.charAt(0)}</span>
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold group-hover:text-purple-200 transition-colors duration-300">{testimonial.author}</p>
+                        <p className="text-purple-300 text-sm group-hover:text-purple-200 transition-colors duration-300">{testimonial.role}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
