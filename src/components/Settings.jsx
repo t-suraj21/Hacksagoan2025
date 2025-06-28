@@ -27,7 +27,7 @@ import {
 import { useSettings } from '../context/SettingsContext';
 
 const Settings = ({ isOpen, onClose }) => {
-  const { theme, setTheme, fontSize, setFontSize } = useSettings();
+  const { fontSize, setFontSize } = useSettings();
 
   // Notification Settings
   const [notifications, setNotifications] = useState(() => {
@@ -86,6 +86,11 @@ const Settings = ({ isOpen, onClose }) => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [activeSection, setActiveSection] = useState('appearance');
 
+  // New Active Setting
+  const [activeMode, setActiveMode] = useState(() => {
+    return JSON.parse(localStorage.getItem('activeMode') || 'false');
+  });
+
   // Load and filter available voices
   useEffect(() => {
     if ('speechSynthesis' in window) {
@@ -122,11 +127,11 @@ const Settings = ({ isOpen, onClose }) => {
 
   const handleSettingChange = (setting, value) => {
     switch(setting) {
-      case 'theme':
-        setTheme(value);
-        break;
       case 'fontSize':
         setFontSize(value);
+        break;
+      case 'activeMode':
+        setActiveMode(value);
         break;
       case 'notifications':
         setNotifications(value);
@@ -197,6 +202,9 @@ const Settings = ({ isOpen, onClose }) => {
     localStorage.setItem('voiceGender', voiceGender);
     localStorage.setItem('voiceAge', voiceAge);
 
+    // Save active mode
+    localStorage.setItem('activeMode', JSON.stringify(activeMode));
+
     // Show save feedback
     setShowSaveFeedback(true);
     setHasUnsavedChanges(false);
@@ -205,6 +213,13 @@ const Settings = ({ isOpen, onClose }) => {
     setTimeout(() => {
       setShowSaveFeedback(false);
     }, 2000);
+
+    // Apply active mode globally
+    if (activeMode) {
+      document.body.classList.add('active-mode');
+    } else {
+      document.body.classList.remove('active-mode');
+    }
   };
 
   const handleClose = () => {
@@ -217,77 +232,41 @@ const Settings = ({ isOpen, onClose }) => {
     }
   };
 
+  useEffect(() => {
+    // On mount, apply active mode if enabled
+    if (activeMode) {
+      document.body.classList.add('active-mode');
+    } else {
+      document.body.classList.remove('active-mode');
+    }
+  }, [activeMode]);
+
   const renderSection = () => {
     switch(activeSection) {
       case 'appearance':
         return (
           <div className="space-y-4 sm:space-y-6">
+            {/* Active Mode Toggle */}
             <div>
               <h3 className="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-200 mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
                 <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
-                Theme Settings
+                Active Mode
               </h3>
-              <div className="grid grid-cols-3 gap-2 sm:gap-4">
-                <button
-                  onClick={() => handleSettingChange('theme', 'light')}
-                  className={`p-2 sm:p-4 rounded-lg flex flex-col items-center gap-1.5 sm:gap-2 transition-all duration-300 ${
-                    theme === 'light'
-                      ? 'bg-purple-100 dark:bg-purple-900/50 ring-2 ring-purple-500'
-                      : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  <Sun className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
-                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">Light</span>
-                </button>
-                <button
-                  onClick={() => handleSettingChange('theme', 'dark')}
-                  className={`p-2 sm:p-4 rounded-lg flex flex-col items-center gap-1.5 sm:gap-2 transition-all duration-300 ${
-                    theme === 'dark'
-                      ? 'bg-purple-100 dark:bg-purple-900/50 ring-2 ring-purple-500'
-                      : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  <Moon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
-                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">Dark</span>
-                </button>
-                <button
-                  onClick={() => handleSettingChange('theme', 'normal')}
-                  className={`p-2 sm:p-4 rounded-lg flex flex-col items-center gap-1.5 sm:gap-2 transition-all duration-300 ${
-                    theme === 'normal'
-                      ? 'bg-purple-100 dark:bg-purple-900/50 ring-2 ring-purple-500'
-                      : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  <Monitor className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500" />
-                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">System</span>
-                </button>
+              <div className="flex items-center gap-4">
+                <span className="text-gray-700 dark:text-gray-300">Enable Active Mode</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only peer"
+                    checked={activeMode}
+                    onChange={e => handleSettingChange('activeMode', e.target.checked)}
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                </label>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:gap-4 mt-2 sm:mt-4">
-                <button
-                  onClick={() => handleSettingChange('theme', 'purple')}
-                  className={`p-2 sm:p-4 rounded-lg flex flex-col items-center gap-1.5 sm:gap-2 transition-all duration-300 ${
-                    theme === 'purple'
-                      ? 'bg-purple-100 dark:bg-purple-900/50 ring-2 ring-purple-500'
-                      : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  <Palette className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
-                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">Purple</span>
-                </button>
-                <button
-                  onClick={() => handleSettingChange('theme', 'blue')}
-                  className={`p-2 sm:p-4 rounded-lg flex flex-col items-center gap-1.5 sm:gap-2 transition-all duration-300 ${
-                    theme === 'blue'
-                      ? 'bg-purple-100 dark:bg-purple-900/50 ring-2 ring-purple-500'
-                      : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  <Palette className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
-                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">Blue</span>
-                </button>
-              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">When enabled, the website will use Active Mode for enhanced focus and accessibility.</p>
             </div>
-
+            {/* Font Size and Reading Speed (keep as is) */}
             <div>
               <h3 className="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-200 mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
                 <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
